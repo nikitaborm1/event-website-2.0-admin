@@ -3,146 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventPro CRM - Панель организатора</title>
+    <title>EventPro CRM - Вход для администратора</title>
     <style>
-        /* --- Базовые стили --- */
-        :root {
-            --sidebar-bg: #1e293b;
-            --sidebar-text: #94a3b8;
-            --sidebar-active: #334155;
-            --main-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --border: #e2e8f0;
+        :root { 
+            --sidebar-bg: #1e293b; 
+            --main-bg: #f8fafc; 
+            --primary: #3b82f6; 
+            --success: #10b981; 
+            --warning: #f59e0b; 
+            --danger: #ef4444; 
+            --border: #e2e8f0; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--main-bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--main-bg); color: #333; height: 100vh; overflow: hidden; }
 
-        /* --- Сайдбар --- */
-        .sidebar { width: 260px; background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; }
-        .logo { font-size: 22px; font-weight: bold; padding: 0 20px 20px; color: #fff; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--sidebar-active); }
+        /* --- Экран входа --- */
+        #login-screen { 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: #1e293b; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+        }
+        .login-box { 
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 10px; 
+            text-align: center; 
+            width: 90%; 
+            max-width: 400px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+        }
+        .login-box h2 { margin-bottom: 10px; color: #1e293b; }
+        .login-box p { margin-bottom: 20px; color: #666; font-size: 14px; }
+        .login-box input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            text-align: center; 
+            outline: none;
+        }
+        .login-box input:focus { border-color: var(--primary); }
+        .login-box button { 
+            width: 100%; 
+            padding: 12px; 
+            background: var(--primary); 
+            color: #fff; 
+            border: none; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s;
+        }
+        .login-box button:hover { background: #2563eb; }
+        .login-error { color: var(--danger); margin-top: 10px; font-size: 14px; display: none; font-weight: bold; }
+        .hint { margin-top: 20px; font-size: 12px; color: #999; }
+
+        /* --- Админ-панель (Изначально скрыта) --- */
+        #admin-panel { 
+            display: none; /* Скрыта по умолчанию */
+            width: 100%; 
+            height: 100vh; 
+        }
+        
+        .sidebar { width: 260px; background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; height: 100vh; }
+        .logo { font-size: 22px; font-weight: bold; padding: 0 20px 20px; color: #fff; border-bottom: 1px solid #334155; }
         .logo span { color: var(--primary); }
-        .nav-menu { list-style: none; margin-top: 20px; }
-        .nav-menu li { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--sidebar-text); transition: 0.2s; font-weight: 500; }
-        .nav-menu li:hover, .nav-menu li.active { background: var(--sidebar-active); color: #fff; border-left: 4px solid var(--primary); }
-        
-        /* --- Основной контент --- */
-        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .topbar { background: var(--card-bg); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .topbar h1 { font-size: 20px; font-weight: 600; }
-        .user-profile { display: flex; align-items: center; gap: 10px; font-weight: 500; }
-        .avatar { width: 36px; height: 36px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .nav-menu { list-style: none; margin-top: 20px; flex: 1; display: flex; flex-direction: column; }
+        .nav-menu li { padding: 12px 20px; cursor: pointer; color: #94a3b8; transition: 0.2s; font-weight: 500; }
+        .nav-menu li:hover, .nav-menu li.active { background: #334155; color: #fff; border-left: 4px solid var(--primary); }
 
-        .content-area { padding: 30px; flex: 1; }
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--main-bg); }
+        .topbar { background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .content-area { padding: 30px; }
         
-        /* --- Статистика --- */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .stat-card h3 { font-size: 14px; color: var(--text-muted); margin-bottom: 10px; font-weight: 500; }
-        .stat-card .value { font-size: 28px; font-weight: bold; color: var(--text-main); }
+        .stat-card { background: #fff; padding: 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .stat-card h3 { font-size: 14px; color: #64748b; margin-bottom: 10px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; }
         .stat-card.new .value { color: var(--warning); }
         .stat-card.work .value { color: var(--primary); }
         .stat-card.done .value { color: var(--success); }
 
-        /* --- Таблица заявок --- */
-        .table-container { background: var(--card-bg); border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; }
+        .table-container { background: #fff; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .table-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .table-header h2 { font-size: 18px; font-weight: 600; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 15px 20px; background: #f8fafc; font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
-        td { padding: 15px 20px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
-        tr:last-child td { border-bottom: none; }
+        th { padding: 15px; background: #f8fafc; font-size: 12px; text-transform: uppercase; color: #64748b; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
         tr:hover { background: #f8fafc; }
         
-        /* --- Статусы --- */
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
         .badge.new { background: #fef3c7; color: #d97706; }
         .badge.in-progress { background: #dbeafe; color: #2563eb; }
         .badge.completed { background: #d1fae5; color: #059669; }
         
-        /* --- Кнопки --- */
         .btn { padding: 8px 14px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: #fff; }
-        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-primary:hover { background: #2563eb; }
         .btn-success { background: var(--success); color: #fff; }
         .btn-success:hover { background: #059669; }
         .btn-danger { background: #fee2e2; color: var(--danger); }
         .btn-danger:hover { background: var(--danger); color: #fff; }
-        
         .actions-cell { display: flex; gap: 8px; }
-
-        /* --- Пустое состояние --- */
-        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); }
-        
-        /* --- Адаптивность --- */
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; padding: 10px; flex-direction: row; justify-content: space-between; align-items: center; }
-            .logo { padding: 0; border: none; }
-            .nav-menu { display: flex; margin: 0; }
-            .nav-menu li { padding: 8px 12px; border-left: none; border-bottom: 3px solid transparent; }
-            .nav-menu li.active { border-left: none; border-bottom: 3px solid var(--primary); }
-            .content-area { padding: 15px; }
-            .table-container { overflow-x: auto; }
-        }
+        .empty-state { text-align: center; padding: 40px; color: #64748b; }
     </style>
 </head>
 <body>
 
-    <!-- Сайдбар организатора -->
-    <aside class="sidebar">
-        <div class="logo">Event<span>Pro</span> CRM</div>
-        <ul class="nav-menu">
-            <li class="active">📊 Дашборд</li>
-            <li onclick="clearAll()">🗑️ Очистить базу</li>
-        </ul>
-    </aside>
+    <!-- ЭКРАН ВХОДА -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>🔒 Вход в панель</h2>
+            <p>Введите пароль администратора</p>
+            <input type="password" id="passwordInput" placeholder="Пароль">
+            <button id="loginBtn">Войти</button>
+            <div class="login-error" id="loginError">❌ Неверный пароль! Попробуйте снова.</div>
+            <p class="hint">Подсказка для проверки: <b>admin123</b></p>
+        </div>
+    </div>
 
-    <!-- Основной контент -->
-    <main class="main-content">
-        <header class="topbar">
-            <h1 id="page-title">Панель управления заявками</h1>
-            <div class="user-profile">
-                <div class="avatar">А</div>
-                <span>Администратор</span>
-            </div>
-        </header>
+    <!-- ПАНЕЛЬ АДМИНИСТРАТОРА (Изначально скрыта) -->
+    <div id="admin-panel">
+        <aside class="sidebar">
+            <div class="logo">Event<span>Pro</span> CRM</div>
+            <ul class="nav-menu">
+                <li class="active">📊 Дашборд заявок</li>
+                <!-- Кнопка "На сайт клиентов" удалена -->
+                <li onclick="logout()" style="color: #ef4444; margin-top: auto;">🚪 Выйти</li>
+            </ul>
+        </aside>
 
-        <div class="content-area">
-            <!-- Дашборд (Таблица заявок) -->
-            <div id="dashboard-view">
-                <!-- Статистика -->
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Панель управления заявками</h1>
+                <div>👤 Администратор</div>
+            </header>
+
+            <div class="content-area">
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <h3>Всего заявок</h3>
-                        <div class="value" id="stat-total">0</div>
-                    </div>
-                    <div class="stat-card new">
-                        <h3>Новые</h3>
-                        <div class="value" id="stat-new">0</div>
-                    </div>
-                    <div class="stat-card work">
-                        <h3>В работе</h3>
-                        <div class="value" id="stat-work">0</div>
-                    </div>
-                    <div class="stat-card done">
-                        <h3>Завершено</h3>
-                        <div class="value" id="stat-done">0</div>
-                    </div>
+                    <div class="stat-card"><h3>Всего заявок</h3><div class="value" id="stat-total">0</div></div>
+                    <div class="stat-card new"><h3>Новые</h3><div class="value" id="stat-new">0</div></div>
+                    <div class="stat-card work"><h3>В работе</h3><div class="value" id="stat-work">0</div></div>
+                    <div class="stat-card done"><h3>Завершено</h3><div class="value" id="stat-done">0</div></div>
                 </div>
 
-                <!-- Таблица -->
                 <div class="table-container">
                     <div class="table-header">
-                        <h2>Входящие заявки от пользователей</h2>
-                        <!-- Эта кнопка имитирует приход заявки с клиентского сайта -->
-                        <button class="btn btn-primary" onclick="addTestData()">🔔 Сгенерировать тестовую заявку</button>
+                        <h2>Входящие заявки от клиентов</h2>
+                        <button class="btn btn-primary" onclick="renderTable()">🔄 Обновить</button>
                     </div>
                     <table>
                         <thead>
@@ -157,25 +172,54 @@
                                 <th>Действия</th>
                             </tr>
                         </thead>
-                        <tbody id="requests-body">
-                            <!-- Сюда JS будет вставлять строки -->
-                        </tbody>
+                        <tbody id="requests-body"></tbody>
                     </table>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script>
-        // --- Логика CRM ---
+        // --- 1. Логика входа ---
+        const ADMIN_PASSWORD = "admin123"; // Пароль администратора
+
+        const loginScreen = document.getElementById('login-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+
+        function checkPassword() {
+            const enteredPass = passwordInput.value.trim();
+
+            if (enteredPass === ADMIN_PASSWORD) {
+                loginScreen.style.display = 'none'; 
+                adminPanel.style.display = 'flex';  
+                renderTable(); 
+            } else {
+                loginError.style.display = 'block'; 
+                passwordInput.value = ''; 
+            }
+        }
+
+        loginBtn.addEventListener('click', checkPassword);
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function logout() {
+            location.reload(); 
+        }
+
+        // --- 2. Логика работы с заявками ---
         let requests = JSON.parse(localStorage.getItem('eventProCRM')) || [];
 
-        // 1. Сохранение в localStorage
         function save() {
             localStorage.setItem('eventProCRM', JSON.stringify(requests));
         }
 
-        // 2. Обновление статистики
         function updateStats() {
             document.getElementById('stat-total').textContent = requests.length;
             document.getElementById('stat-new').textContent = requests.filter(r => r.status === 'new').length;
@@ -183,18 +227,20 @@
             document.getElementById('stat-done').textContent = requests.filter(r => r.status === 'completed').length;
         }
 
-        // 3. Отрисовка таблицы
         function renderTable() {
+            requests = JSON.parse(localStorage.getItem('eventProCRM')) || [];
+            
             const tbody = document.getElementById('requests-body');
+            if (!tbody) return;
+
             tbody.innerHTML = '';
             updateStats();
 
             if (requests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Нет входящих заявок. Нажмите "Сгенерировать тестовую заявку", чтобы имитировать приход заявки с клиентского сайта.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Нет входящих заявок. Клиенты пока не оставили ни одной заявки на сайте.</td></tr>`;
                 return;
             }
 
-            // Сортировка: сначала новые
             requests.sort((a, b) => b.id - a.id);
 
             requests.forEach(req => {
@@ -215,7 +261,7 @@
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>#${req.id}</td>
+                    <td>#${String(req.id).slice(-4)}</td>
                     <td>${req.createdAt}</td>
                     <td><strong>${req.name}</strong></td>
                     <td>${req.phone}</td>
@@ -233,59 +279,21 @@
             });
         }
 
-        // 4. Изменение статуса
         function updateStatus(id, newStatus) {
             const req = requests.find(r => r.id === id);
-            if (req) {
-                req.status = newStatus;
-                save();
-                renderTable();
-            }
+            if (req) { req.status = newStatus; save(); renderTable(); }
         }
 
-        // 5. Удаление заявки
         function deleteRequest(id) {
             if (confirm('Удалить эту заявку?')) {
                 requests = requests.filter(r => r.id !== id);
-                save();
-                renderTable();
+                save(); renderTable();
             }
         }
 
-        // 6. Очистка всей базы
-        function clearAll() {
-            if (confirm('Вы уверены, что хотите удалить ВСЕ заявки?')) {
-                requests = [];
-                save();
-                renderTable();
-            }
-        }
-
-        // 7. Генерация тестовых данных (Имитация заявки с клиентского сайта)
-        function addTestData() {
-            const names = ['Анна Смирнова', 'Дмитрий Волков', 'Елена Кузнецова', 'Сергей Морозов', 'Ольга Павлова'];
-            const types = ['Свадьба', 'Корпоратив', 'День рождения', 'Выпускной'];
-            const randomName = names[Math.floor(Math.random() * names.length)];
-            const randomType = types[Math.floor(Math.random() * types.length)];
-            
-            const newRequest = {
-                id: Math.floor(Math.random() * 9000) + 1000,
-                createdAt: new Date().toLocaleDateString('ru-RU'),
-                name: randomName,
-                phone: '+7 (999) ' + Math.floor(Math.random() * 900 + 100) + '-' + Math.floor(Math.random() * 90 + 10) + '-' + Math.floor(Math.random() * 90 + 10),
-                eventType: randomType,
-                date: '2026-12-' + String(Math.floor(Math.random() * 28) + 1).padStart(2, '0'),
-                comment: 'Тестовая заявка. Бюджет: ' + (Math.floor(Math.random() * 50) + 10) + ' тыс. руб.',
-                status: 'new'
-            };
-
-            requests.push(newRequest);
-            save();
-            renderTable();
-        }
-
-        // Инициализация при загрузке
-        renderTable();
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'eventProCRM') renderTable();
+        });
     </script>
 </body>
 </html>
